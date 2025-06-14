@@ -1,0 +1,4 @@
+.env
+/Pereval/__pycache__/
+/pereval_app/__pycache__/
+/pereval_app/migrations/__pycache__/
