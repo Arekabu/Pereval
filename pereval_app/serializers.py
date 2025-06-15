@@ -55,7 +55,7 @@ class PerevalSerializer(serializers.ModelSerializer):
             **validated_data,
             user=user,
             coords=coords,
-            status='new',  # Устанавливаем статус 'new'
+            status='new',
             winter=Level.objects.get(name=level_data['winter']) if level_data['winter'] else None,
             summer=Level.objects.get(name=level_data['summer']) if level_data['summer'] else None,
             autumn=Level.objects.get(name=level_data['autumn']) if level_data['autumn'] else None,
