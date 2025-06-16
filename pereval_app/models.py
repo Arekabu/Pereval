@@ -42,29 +42,6 @@ class Coords(models.Model):
         verbose_name_plural = 'Координаты'
 
 
-class Level(models.Model):
-    LEVEL_CHOICES = [
-        ('1A', '1A'),
-        ('1B', '1B'),
-        ('1C', '1C'),
-        ('2A', '2A'),
-        ('2B', '2B'),
-        ('2C', '2C'),
-        ('3A', '3A'),
-        ('3B', '3B'),
-        ('3C', '3C'),
-    ]
-
-    name = models.CharField(max_length=10, choices=LEVEL_CHOICES, unique=True)
-
-    def __str__(self):
-        return f'{self.name}'
-
-    class Meta:
-        verbose_name = 'Уровень сложности'
-        verbose_name_plural = 'Уровни сложности'
-
-
 class Pereval(models.Model):
 
     STATUS_CHOICES = [
@@ -72,6 +49,13 @@ class Pereval(models.Model):
         ("pending", "На проверке"),
         ("accepted", "Принят"),
         ("rejected", "Отклонён"),
+    ]
+
+    LEVEL_CHOICES = [
+        ('', 'Не указано'),
+        ('1A', '1A'), ('1B', '1B'), ('1C', '1C'),
+        ('2A', '2A'), ('2B', '2B'), ('2C', '2C'),
+        ('3A', '3A'), ('3B', '3B'), ('3C', '3C'),
     ]
 
     title = models.CharField(max_length=100)
@@ -82,39 +66,32 @@ class Pereval(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     coords = models.ForeignKey(Coords, on_delete=models.CASCADE)
 
-    winter = models.ForeignKey(
-        Level,
-        on_delete=models.SET_NULL,
-        null=True,
+    winter = models.CharField(
+        max_length=2,
+        choices=LEVEL_CHOICES,
         blank=True,
-        related_name='winter_perevals',
+        null=True,
         verbose_name="Зима"
     )
-
-    summer = models.ForeignKey(
-        Level,
-        on_delete=models.SET_NULL,
-        null=True,
+    summer = models.CharField(
+        max_length=2,
+        choices=LEVEL_CHOICES,
         blank=True,
-        related_name='summer_perevals',
+        null=True,
         verbose_name="Лето"
     )
-
-    autumn = models.ForeignKey(
-        Level,
-        on_delete=models.SET_NULL,
-        null=True,
+    autumn = models.CharField(
+        max_length=2,
+        choices=LEVEL_CHOICES,
         blank=True,
-        related_name='autumn_perevals',
+        null=True,
         verbose_name="Осень"
     )
-
-    spring = models.ForeignKey(
-        Level,
-        on_delete=models.SET_NULL,
-        null=True,
+    spring = models.CharField(
+        max_length=2,
+        choices=LEVEL_CHOICES,
         blank=True,
-        related_name='spring_perevals',
+        null=True,
         verbose_name="Весна"
     )
 
@@ -129,7 +106,9 @@ class Image(models.Model):
         verbose_name="Изображение",
         validators=[
             FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])
-        ]
+        ],
+        null=True,
+        blank=True
     )
 
     title = models.CharField(max_length=255, verbose_name="Название изображения", blank=True, null=True)

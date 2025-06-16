@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Coords, Level, Pereval, Image
+from .models import User, Coords, Pereval, Image
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,12 +14,6 @@ class CoordsSerializer(serializers.ModelSerializer):
         fields = ['latitude', 'longitude', 'height']
 
 
-class LevelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Level
-        fields = ['winter', 'summer', 'autumn', 'spring']
-
-
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
@@ -30,6 +24,7 @@ class PerevalSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     coords = CoordsSerializer()
     images = ImageSerializer(many=True)
+    level = serializers.DictField(write_only=True)
 
     class Meta:
         model = Pereval
@@ -40,12 +35,12 @@ class PerevalSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         coords_data = validated_data.pop('coords')
         images_data = validated_data.pop('images')
-        level_data = {
-            'winter': validated_data.pop('winter', None),
-            'summer': validated_data.pop('summer', None),
-            'autumn': validated_data.pop('autumn', None),
-            'spring': validated_data.pop('spring', None),
-        }
+
+        level_data = validated_data.pop('level', {})
+        winter = level_data.get('winter', '')
+        summer = level_data.get('summer', '')
+        autumn = level_data.get('autumn', '')
+        spring = level_data.get('spring', '')
 
         user = User.objects.create(**user_data)
 
@@ -56,10 +51,10 @@ class PerevalSerializer(serializers.ModelSerializer):
             user=user,
             coords=coords,
             status='new',
-            winter=Level.objects.get(name=level_data['winter']) if level_data['winter'] else None,
-            summer=Level.objects.get(name=level_data['summer']) if level_data['summer'] else None,
-            autumn=Level.objects.get(name=level_data['autumn']) if level_data['autumn'] else None,
-            spring=Level.objects.get(name=level_data['spring']) if level_data['spring'] else None,
+            winter=winter if winter else None,
+            summer=summer if summer else None,
+            autumn=autumn if autumn else None,
+            spring=spring if spring else None
         )
 
         for image_data in images_data:
