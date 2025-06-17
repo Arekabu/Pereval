@@ -1,7 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
-from .serializers import PerevalSerializer
+from rest_framework.exceptions import NotFound
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import PerevalSerializer, PerevalDetailSerializer
+from .models import Pereval
 
 
 class SubmitDataView(APIView):
@@ -25,3 +28,14 @@ class SubmitDataView(APIView):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class PerevalDetailView(RetrieveAPIView):
+    serializer_class = PerevalDetailSerializer
+    queryset = Pereval.objects.select_related('user', 'coords').prefetch_related('images')
+
+    def get_object(self):
+        try:
+            return self.queryset.get(pk=self.kwargs['pk'])
+        except Pereval.DoesNotExist:
+            raise NotFound({'message': 'Перевал не найден', 'id': self.kwargs['pk']})

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from .models import User, Coords, Pereval, Image
 
 
@@ -6,6 +7,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'fam', 'name', 'otc', 'phone']
+        extra_kwargs = {
+            'email': {'validators': []}
+        }
 
 
 class CoordsSerializer(serializers.ModelSerializer):
@@ -42,7 +46,10 @@ class PerevalSerializer(serializers.ModelSerializer):
         autumn = level_data.get('autumn', '')
         spring = level_data.get('spring', '')
 
-        user = User.objects.create(**user_data)
+        try:
+            user = User.objects.get(email=user_data['email'])
+        except ObjectDoesNotExist:
+            user = User.objects.create(**user_data)
 
         coords = Coords.objects.create(**coords_data)
 
@@ -61,3 +68,25 @@ class PerevalSerializer(serializers.ModelSerializer):
             Image.objects.create(pereval=pereval, **image_data)
 
         return pereval
+
+
+class PerevalDetailSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    coords = CoordsSerializer()
+    images = ImageSerializer(many=True, source='images.all')
+    level = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Pereval
+        fields = [
+            'id', 'beauty_title', 'title', 'other_titles', 'connect',
+            'add_time', 'status', 'user', 'coords', 'level', 'images'
+        ]
+
+    def get_level(self, obj):
+        return {
+            'winter': obj.winter if obj.winter else '',
+            'summer': obj.summer if obj.summer else '',
+            'autumn': obj.autumn if obj.autumn else '',
+            'spring': obj.spring if obj.spring else ''
+        }
