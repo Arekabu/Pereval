@@ -8,6 +8,21 @@ from .models import Pereval
 
 
 class SubmitDataView(APIView):
+    def get(self, request):
+        """Обработка GET /submitData/?user__email=<email>"""
+        email = request.query_params.get('user__email')
+        if not email:
+            return Response(
+                {"error": "Не указан email пользователя"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        perevals = Pereval.objects.filter(user__email=email).select_related('user', 'coords').prefetch_related('images')
+
+        serializer = PerevalDetailSerializer(perevals, many=True)
+
+        return Response(serializer.data)
+
     def post(self, request):
         serializer = PerevalSerializer(data=request.data)
         if serializer.is_valid():
