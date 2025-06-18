@@ -10,7 +10,7 @@ class User(models.Model):
     phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Телефон")
 
     def __str__(self):
-        return f'{self.fam} {self.name} {self.otc or ''}'
+        return f'{self.fam} {self.name} {self.otc or ""}'
 
     class Meta:
         verbose_name = "Пользователь"
