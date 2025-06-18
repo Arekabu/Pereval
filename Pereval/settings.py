@@ -18,8 +18,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['arekabu.beget.tech.ru', 'localhost']
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Application definition
 
