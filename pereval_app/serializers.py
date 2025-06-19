@@ -35,6 +35,16 @@ class PerevalSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['status']
 
+    def update(self, instance, validated_data):
+        level_data = validated_data.pop('level', None)
+        if level_data:
+            instance.winter = level_data.get('winter', instance.winter)
+            instance.summer = level_data.get('summer', instance.summer)
+            instance.autumn = level_data.get('autumn', instance.autumn)
+            instance.spring = level_data.get('spring', instance.spring)
+
+        return super().update(instance, validated_data)
+
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         coords_data = validated_data.pop('coords')

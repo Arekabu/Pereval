@@ -3,3 +3,5 @@
 /pereval_app/__pycache__/
 /pereval_app/migrations/__pycache__/
 db.sqlite3
+pereval_ssh
+pereval_ssh.pub
