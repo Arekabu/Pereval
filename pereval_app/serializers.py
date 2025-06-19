@@ -25,7 +25,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class PerevalSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserSerializer()
     coords = CoordsSerializer()
     images = ImageSerializer(many=True)
     level = serializers.DictField(write_only=True)
@@ -36,6 +36,7 @@ class PerevalSerializer(serializers.ModelSerializer):
         read_only_fields = ['status']
 
     def update(self, instance, validated_data):
+        # coords update
         coords_data = validated_data.pop('coords', None)
         if coords_data:
             coords = instance.coords
@@ -43,17 +44,22 @@ class PerevalSerializer(serializers.ModelSerializer):
                 setattr(coords, attr, value)
             coords.save()
 
+        # images update
         images_data = validated_data.pop('images', None)
         if images_data is not None:
+            # Delete existing images
             instance.images.all().delete()
+            # Create new images
             for image_data in images_data:
                 Image.objects.create(pereval=instance, **image_data)
 
+        #level data update
         level_data = validated_data.pop('level', {})
         for season in ['winter', 'summer', 'autumn', 'spring']:
             if season in level_data:
                 setattr(instance, season, level_data[season] if level_data[season] else None)
 
+        # Update other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
