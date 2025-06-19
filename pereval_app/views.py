@@ -100,6 +100,7 @@ class SubmitDataView(APIView):
                         },
                         status=status.HTTP_400_BAD_REQUEST
                     )
+            request.data.pop('user')
 
         # Обновляем данные
         serializer = PerevalSerializer(pereval, data=request.data, partial=True)
