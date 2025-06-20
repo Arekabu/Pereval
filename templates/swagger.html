@@ -21,8 +21,10 @@ charset="utf-8"/>
        layout: "BaseLayout",
        requestInterceptor: (request) => {
          request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+
          return request;
        }
+
      })
    </script>
  </body>
