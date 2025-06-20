@@ -5,7 +5,7 @@ info:
   description: API для добавления и редактирования перевалов
 
 servers:
-  - url: http://localhost:8000
+  - url: http://localhost:8000/api
     description: Локальный сервер
 
 paths:
