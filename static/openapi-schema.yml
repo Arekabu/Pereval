@@ -137,11 +137,14 @@ components:
         latitude:
           type: number
           format: float
+          example: 44.1219
         longitude:
           type: number
           format: float
+          example: 101.1580
         height:
           type: integer
+          example: 1500
 
     Image:
       type: object
