@@ -11,7 +11,7 @@ servers:
 paths:
   /submitData/:
     get:
-      summary: Список перевалов по email пользователя
+      summary: Список перевалов по email пользователя (есть тестовый пользователь misha@gmail.ru)
       parameters:
         - in: query
           name: user__email
