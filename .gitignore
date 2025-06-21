@@ -5,3 +5,5 @@
 db.sqlite3
 pereval_ssh
 pereval_ssh.pub
+/htmlcov
+.coverage

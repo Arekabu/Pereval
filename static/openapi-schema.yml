@@ -11,7 +11,7 @@ servers:
 paths:
   /submitData/:
     get:
-      summary: Список перевалов по email пользователя (можно использовать misha@gmail.ru для тестов)
+      summary: Список перевалов по email пользователя (есть тестовый пользователь misha@gmail.ru)
       parameters:
         - in: query
           name: user__email
@@ -122,14 +122,19 @@ components:
         email:
           type: string
           format: email
+          example: test@skillfactory.ru
         fam:
           type: string
+          example: 'Петров'
         name:
           type: string
+          example: 'Василий'
         otc:
           type: string
+          example: 'Иванович'
         phone:
           type: string
+          example: '+78001234567'
 
     Coords:
       type: object
@@ -137,11 +142,14 @@ components:
         latitude:
           type: number
           format: float
+          example: 61.4517
         longitude:
           type: number
           format: float
+          example: 59.2746
         height:
           type: integer
+          example: 1079
 
     Image:
       type: object
@@ -149,8 +157,10 @@ components:
         data:
           type: string
           format: uri
+          example: null
         title:
           type: string
+          example: 'Спуск'
 
     Level:
       type: object
@@ -158,15 +168,19 @@ components:
         winter:
           type: string
           enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
         summer:
           type: string
           enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
         autumn:
           type: string
           enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
         spring:
           type: string
           enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
 
     Pereval:
       type: object
@@ -206,14 +220,18 @@ components:
         - coords
         - images
       properties:
-        title:
-          type: string
         beauty_title:
           type: string
+          example: 'пер.'
+        title:
+          type: string
+          example: 'Дятлова'
         other_titles:
           type: string
+          example: 'Холатчахль'
         connect:
           type: string
+          example: 'гору Холатчахль и высоту 905м'
         user:
           $ref: "#/components/schemas/User"
         coords:
@@ -228,9 +246,9 @@ components:
     PerevalUpdate:
       type: object
       properties:
-        title:
-          type: string
         beauty_title:
+          type: string
+        title:
           type: string
         other_titles:
           type: string
