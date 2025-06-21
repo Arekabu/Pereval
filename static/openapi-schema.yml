@@ -1,0 +1,264 @@
+openapi: 3.0.0
+info:
+  title: Pereval API
+  version: 1.0.0
+  description: API для добавления и редактирования перевалов
+
+servers:
+  - url: http://localhost:8000/api
+    description: Локальный сервер
+
+paths:
+  /submitData/:
+    get:
+      summary: Список перевалов по email пользователя
+      parameters:
+        - in: query
+          name: user__email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email пользователя
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pereval"
+        '400':
+          description: Не указан email
+        '404':
+          description: Перевалы не найдены
+
+    post:
+      summary: Добавить новый перевал
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerevalCreate"
+      responses:
+        '200':
+          description: Успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Запись успешно создана"
+                  id:
+                    type: integer
+                    example: 1
+        '400':
+          description: Ошибка валидации
+
+  /submitData/{id}/:
+    get:
+      summary: Получить перевал по ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pereval"
+        '404':
+          description: Перевал не найден
+
+    patch:
+      summary: Обновить перевал (только если статус 'new')
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerevalUpdate"
+      responses:
+        '200':
+          description: Успешно обновлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "Запись успешно обновлена"
+        '400':
+          description: Ошибка валидации или нельзя редактировать
+        '404':
+          description: Перевал не найден
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: test@skillfactory.ru
+        fam:
+          type: string
+          example: 'Петров'
+        name:
+          type: string
+          example: 'Василий'
+        otc:
+          type: string
+          example: 'Иванович'
+        phone:
+          type: string
+          example: '+78001234567'
+
+    Coords:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: float
+          example: 61.4517
+        longitude:
+          type: number
+          format: float
+          example: 59.2746
+        height:
+          type: integer
+          example: 1079
+
+    Image:
+      type: object
+      properties:
+        data:
+          type: string
+          format: uri
+          example: null
+        title:
+          type: string
+          example: 'Спуск'
+
+    Level:
+      type: object
+      properties:
+        winter:
+          type: string
+          enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
+        summer:
+          type: string
+          enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
+        autumn:
+          type: string
+          enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
+        spring:
+          type: string
+          enum: ["", "1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C"]
+          example: '2B'
+
+    Pereval:
+      type: object
+      properties:
+        id:
+          type: integer
+        beauty_title:
+          type: string
+        title:
+          type: string
+        other_titles:
+          type: string
+        connect:
+          type: string
+        add_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: ["new", "pending", "accepted", "rejected"]
+        user:
+          $ref: "#/components/schemas/User"
+        coords:
+          $ref: "#/components/schemas/Coords"
+        level:
+          $ref: "#/components/schemas/Level"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/Image"
+
+    PerevalCreate:
+      type: object
+      required:
+        - title
+        - user
+        - coords
+        - images
+      properties:
+        beauty_title:
+          type: string
+          example: 'пер.'
+        title:
+          type: string
+          example: 'Дятлова'
+        other_titles:
+          type: string
+          example: 'Холатчахль'
+        connect:
+          type: string
+          example: 'гору Холатчахль и высоту 905м'
+        user:
+          $ref: "#/components/schemas/User"
+        coords:
+          $ref: "#/components/schemas/Coords"
+        level:
+          $ref: "#/components/schemas/Level"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/Image"
+
+    PerevalUpdate:
+      type: object
+      properties:
+        beauty_title:
+          type: string
+        title:
+          type: string
+        other_titles:
+          type: string
+        connect:
+          type: string
+        coords:
+          $ref: "#/components/schemas/Coords"
+        level:
+          $ref: "#/components/schemas/Level"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/Image"

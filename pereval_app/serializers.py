@@ -35,6 +35,37 @@ class PerevalSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['status']
 
+    def update(self, instance, validated_data):
+        # обновляем координаты
+        coords_data = validated_data.pop('coords', None)
+        if coords_data:
+            coords = instance.coords
+            for attr, value in coords_data.items():
+                setattr(coords, attr, value)
+            coords.save()
+
+        # обновляем картинки
+        images_data = validated_data.pop('images', None)
+        if images_data is not None:
+            # Delete existing images
+            instance.images.all().delete()
+            # Create new images
+            for image_data in images_data:
+                Image.objects.create(pereval=instance, **image_data)
+
+        # обновляем уровни сложности
+        level_data = validated_data.pop('level', {})
+        for season in ['winter', 'summer', 'autumn', 'spring']:
+            if season in level_data:
+                setattr(instance, season, level_data[season] if level_data[season] else None)
+
+        # обновляем остальные поля
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         coords_data = validated_data.pop('coords')
