@@ -4,15 +4,19 @@
 Рабочую версию проекта можно проверить по ссылкам на демонстрационную версию.
 
 ## 🔗 Базовые URL
-Для основной версии с PosgreSQL (локально):
+Локальная версия с PosgreSQL:
 ```text
 http://127.0.0.1:8000/api/submitData/
+```
+**SWAGGER документация** для локальной версии с PosgreSQL:
+```text
+http://127.0.0.1:8000/swagger/
 ```
 Демонстрационная версия с SQLite:
 ```text
 https://kryakzenpuk.pythonanywhere.com/api/submitData/
 ```
-**SWAGGER** вариант демонстрационной версии с SQLite:
+**SWAGGER документация** для демонстрационной версии с SQLite:
 ```text
 https://kryakzenpuk.pythonanywhere.com/swagger/
 ```
@@ -318,15 +322,38 @@ https://kryakzenpuk.pythonanywhere.com/swagger/
 - **Статусы перевала:**
   - `new` — можно редактировать
   - `pending` , `accepted` , `rejected` — редактирование запрещено
-- **При клонировании репозитория не забудьте создать файл .env в корне проекта:**
-  
-  .env
-  ```bash
-  FSTR_DB_HOST = 'localhost'
-  FSTR_DB_PORT = '5432'
-  FSTR_DB_LOGIN = 'логин_postgres'
-  FSTR_DB_PASS = 'пароль_postgres'
-  ```
+- **При клонировании репозитория не забудьте:**
+  - создать файл .env в корне проекта
+    
+    .env
+    ```bash
+    FSTR_DB_HOST = 'localhost'
+    FSTR_DB_PORT = '5432'
+    FSTR_DB_LOGIN = 'логин_postgres'
+    FSTR_DB_PASS = 'пароль_postgres'
+    ```
+    <br>
+
+  - установить пакеты из файла ```requirements.txt```
+    ```bash
+    pip install -r requirements.txt
+    ```
+    Содержимое файла ```requirements.txt```
+    ```bash
+    asgiref==3.8.1
+    coverage==7.9.1
+    Django==5.2.3
+    django-cors-headers==4.7.0
+    django-filter==25.1
+    djangorestframework==3.16.0
+    dotenv==0.9.9
+    Markdown==3.8
+    pillow==11.2.1
+    psycopg2==2.9.10
+    python-dotenv==1.1.0
+    sqlparse==0.5.3
+    tzdata==2025.2
+    ```
   
 
   
